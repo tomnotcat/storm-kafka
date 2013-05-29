@@ -125,12 +125,19 @@ public class PartitionManager {
     private void fill() {
         //LOG.info("Fetching from Kafka: " + _consumer.host() + ":" + _partition.partition + " from offset " + _emittedToOffset);
         long start = System.nanoTime();
-        ByteBufferMessageSet msgs = _consumer.fetch(
+        ByteBufferMessageSet msgs;
+        try {
+        msgs = _consumer.fetch(
                 new FetchRequest(
                     _spoutConfig.topic,
                     _partition.partition,
                     _emittedToOffset,
                     _spoutConfig.fetchSizeBytes));
+        }
+        catch(Exception e) {
+            LOG.warn("Connection error: " + e.getMessage());
+            return;
+        }
         long end = System.nanoTime();
         long millis = (end - start) / 1000000;
         _fetchAPILatencyMax.update(millis);
