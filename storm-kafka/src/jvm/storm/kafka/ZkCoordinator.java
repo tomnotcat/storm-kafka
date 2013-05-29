@@ -93,7 +93,8 @@ public class ZkCoordinator implements PartitionCoordinator {
             }
             
         } catch(Exception e) {
-            throw new RuntimeException(e);
+            // throw new RuntimeException(e);
+            LOG.warn("Refreshing exception: " + e.getMessage());
         }
         _cachedList = new ArrayList<PartitionManager>(_managers.values());
         LOG.info("Finished refreshing");
